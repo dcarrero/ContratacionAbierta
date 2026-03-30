@@ -1,0 +1,17 @@
+# ContratacionAbierta.com
+
+> Catalogo de fuentes de datos abiertos de contratacion publica en Espana.
+
+Este sitio reune todas las fuentes oficiales conocidas de datos de contratacion publica
+en Espana, organizadas por ambito (nacional, regional) y formato (Atom XML, API REST, CSV).
+
+## Paginas
+
+- [Inicio](https://contratacionabierta.com/): Vision general del catalogo, estadisticas y navegacion principal.
+- [Fuentes de datos](https://contratacionabierta.com/fuentes/): 15 fuentes oficiales detalladas con enlaces, formatos, cobertura y registros.
+- [Descargas](https://contratacionabierta.com/descargas/): 40+ archivos ZIP descargables desde servidores oficiales de PLACSP, organizados por tipo y ano.
+- [Portales de consulta](https://contratacionabierta.com/portales/): Sitios web con datos ya procesados para consulta ciudadana.
+
+## Informacion detallada
+
+- [llms-full.txt](https://contratacionabierta.com/llms-full.txt): Contenido completo del catalogo de fuentes para LLMs.

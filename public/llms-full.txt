@@ -1,0 +1,136 @@
+# ContratacionAbierta.com — Catalogo completo de fuentes de datos
+
+> Todas las fuentes de datos abiertos de contratacion publica en Espana.
+
+## Fuentes nacionales (Ministerio de Hacienda / PLACSP)
+
+### 1. Licitaciones por contratante (sindicacion_643)
+- URL: https://contrataciondelsectorpublico.gob.es/sindicacion/sindicacion_643/
+- Pagina oficial: https://www.hacienda.gob.es/es-ES/GobiernoAbierto/Datos%20Abiertos/Paginas/licitaciones_plataforma_contratacion.aspx
+- Formato: Atom XML (CODICE 2.07)
+- Registros: ~4 millones de licitaciones
+- Cobertura: 2012-actualidad
+- Actualizacion: Diaria
+- Descargas ZIP anuales: licitacionesPerfilesContratanteCompleto3_{YYYY}.zip
+
+### 2. Contratos menores (sindicacion_1143)
+- URL: https://contrataciondelsectorpublico.gob.es/sindicacion/sindicacion_1143/
+- Pagina oficial: https://www.hacienda.gob.es/es-ES/GobiernoAbierto/Datos%20Abiertos/Paginas/ContratosMenores.aspx
+- Formato: Atom XML (CODICE 2.07)
+- Registros: ~2 millones
+- Cobertura: 2018-actualidad
+- Actualizacion: Diaria
+- Descargas ZIP anuales: contratosMenoresPerfilesContratantes_{YYYY}.zip
+
+### 3. Plataformas agregadas (sindicacion_1044)
+- URL: https://contrataciondelsectorpublico.gob.es/sindicacion/sindicacion_1044/
+- Pagina oficial: https://www.hacienda.gob.es/es-ES/GobiernoAbierto/Datos%20Abiertos/Paginas/licitacionesagregacion.aspx
+- Formato: Atom XML (CODICE 2.07)
+- Registros: ~1,7 millones de entries
+- Cobertura: 2016-actualidad
+- Actualizacion: Diaria
+- Descripcion: Licitaciones de entidades sin perfil propio en PLACSP que publican a traves de plataformas de CCAA, diputaciones y otros entes. Incluye Navarra, Baleares, municipios.
+- Descargas ZIP anuales: PlataformasAgregadasSinMenores_{YYYY}.zip
+
+### 4. Encargos a medios propios (sindicacion_1383)
+- URL: https://contrataciondelsectorpublico.gob.es/sindicacion/sindicacion_1383/
+- Pagina oficial: https://www.hacienda.gob.es/es-ES/GobiernoAbierto/Datos%20Abiertos/Paginas/encargosmediospropios.aspx
+- Formato: Atom XML (CODICE 2.07)
+- Registros: ~15.000
+- Cobertura: 2022-actualidad
+- Actualizacion: Diaria
+- Descripcion: Encargos a medios propios personificados (empresas publicas, entes instrumentales). Regulados por art. 32-33 LCSP. No son licitaciones competitivas.
+- Descargas ZIP anuales: EMP_SectorPublico_{YYYY}.zip
+
+### 5. Consultas preliminares de mercado (sindicacion_1403)
+- URL: https://contrataciondelsectorpublico.gob.es/sindicacion/sindicacion_1403/
+- Pagina oficial: https://www.hacienda.gob.es/es-ES/GobiernoAbierto/Datos%20Abiertos/Paginas/consultaspreliminaresmercado.aspx
+- Formato: Atom XML (CODICE 2.07)
+- Registros: ~3.800
+- Cobertura: 2022-actualidad
+- Actualizacion: Diaria
+- Descripcion: Consultas previas al mercado antes de definir pliegos. Fase exploratoria, utiles para anticipar futuras licitaciones.
+- Descargas ZIP anuales: CPM_SectorPublico_{YYYY}.zip
+
+## Datasets procesados
+
+### BQuant Finance — Dataset historico
+- Portal: https://bquant.io
+- Dataset: https://huggingface.co/datasets/bquantfinance/licitaciones-espana
+- Formato: Parquet (965 MB)
+- Registros: 8,69 millones
+- Licencia: Datos abiertos
+
+## Fuentes regionales
+
+### Catalunya — Contractacio Publica
+- Portal: https://analisi.transparenciacatalunya.cat
+- Dataset: https://analisi.transparenciacatalunya.cat/Sector-P-blic/Contractaci-p-blica-de-la-Generalitat-de-Cataluny/ybgg-dgi6
+- Formato: API Socrata (JSON/CSV)
+- Registros: ~1,7 millones
+- Cobertura: Desde 2010
+- Actualizacion: Semanal
+
+### Andalucia — Contratos menores
+- Portal: https://www.juntadeandalucia.es/datosabiertos/portal/
+- Dataset: https://www.juntadeandalucia.es/datosabiertos/portal/dataset/contratos-menores
+- Formato: CSV (pipe-delimited) + API ElasticSearch
+- Registros: ~693.000
+- Cobertura: 2018-actualidad
+
+### Pais Vasco — Contratacion publica
+- Portal: https://www.contratacion.euskadi.eus
+- API: https://opendata.euskadi.eus/webopd00-apicontract/api/contracts
+- Formato: API REST (JSON)
+- Registros: ~530.000
+- Cobertura: Desde 2014
+
+### Comunitat Valenciana — Contratacion
+- Portal: https://dadesobertes.gva.es
+- Formato: CSV
+- Registros: ~165.000
+
+### Castilla y Leon — Contratos
+- Portal: https://datosabiertos.jcyl.es
+- Formato: CSV
+- Registros: ~142.000
+
+### Canarias — Contratacion
+- Portal: https://datos.canarias.es
+- Formato: CSV
+- Registros: ~81.000
+
+### Aragon — Contratacion
+- Portal: https://serviciosciudadano.aragon.es
+- Formato: CSV
+- Registros: ~46.000
+
+### Asturias — Contratacion centralizada
+- Portal: https://miprincipado.asturias.es/perfil-contratante
+- Formato: CSV
+- Registros: ~375.000
+- Cobertura: 2019-2024
+
+### Comunidad de Madrid — Contratacion
+- Portal: https://contratos-publicos.comunidad.madrid
+- Feed: https://contratos-publicos.comunidad.madrid/feed/licitaciones2
+- Formato: Atom XML
+- Registros: ~1.400
+
+## Portales de consulta (datos ya procesados)
+
+### contratacionabierta.es
+- URL: https://contratacionabierta.es
+- Autor: naroh
+- Descripcion: Portal nacional de contratacion abierta con buscador avanzado y analisis.
+
+### contractes.cat
+- URL: https://contractes.cat
+- Autor: Ciencia de Dades
+- Descripcion: Portal de contratos publicos de Cataluna con visualizaciones interactivas.
+
+## Sobre este catalogo
+
+ContratacionAbierta.com es un proyecto de transparencia ciudadana de Color Vivo Internet S.L.
+Codigo abierto bajo licencia MIT: https://github.com/dcarrero/ContratacionAbierta
+Contacto: https://colorvivo.com/contacto/
