@@ -146,7 +146,7 @@ export const fuentes: Fuente[] = [
     tipo: 'dataset',
     entidad: 'BQuant Finance',
     url_portal: 'https://bquant.io',
-    url_datos: 'https://huggingface.co/datasets/bquantfinance/licitaciones-espana',
+    url_datos: 'https://github.com/BquantFinance/licitaciones-espana',
     formato: 'Parquet',
     registros: '8,69 millones',
     cobertura: 'Historico',
