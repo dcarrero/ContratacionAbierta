@@ -52,7 +52,7 @@ src/
 
 ## Proyecto relacionado
 
-Los datos catalogados aquí se importan y procesan en [contratacion-publica-clm-es](https://github.com/dcarrero/contratacion-publica-clm-es), un portal de transparencia con ~8M contratos públicos indexados.
+Los datos catalogados aquí se importan y procesan en un proyecto privado de análisis de datos de contratación pública con ~8M contratos indexados.
 
 ## Licencia
 
