@@ -8,7 +8,11 @@ interface Props {
   description?: string
 }
 
-const { title, description = 'Catalogo de fuentes de datos abiertos de contratacion publica en Espana. Accede a feeds oficiales, descarga datasets y construye sobre datos publicos.' } = Astro.props
+const siteName = 'ContratacionAbierta.com'
+const siteUrl = 'https://contratacionabierta.com'
+const { title, description = 'Catalogo de fuentes de datos abiertos de contratacion publica en Espana. Feeds oficiales, APIs regionales, datasets y descargas directas.' } = Astro.props
+const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href
+const fullTitle = `${title} — ${siteName}`
 ---
 
 <!doctype html>
@@ -16,13 +20,47 @@ const { title, description = 'Catalogo de fuentes de datos abiertos de contratac
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{fullTitle}</title>
   <meta name="description" content={description} />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="canonical" href={Astro.url.href} />
-  <meta property="og:title" content={title} />
+  <link rel="canonical" href={canonicalUrl} />
+  <link rel="sitemap" href="/sitemap-index.xml" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content={fullTitle} />
   <meta property="og:description" content={description} />
   <meta property="og:type" content="website" />
-  <title>{title}</title>
+  <meta property="og:url" content={canonicalUrl} />
+  <meta property="og:site_name" content={siteName} />
+  <meta property="og:locale" content="es_ES" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content={fullTitle} />
+  <meta name="twitter:description" content={description} />
+
+  <!-- SEO para IA / LLMs -->
+  <link rel="alternate" type="text/plain" href={`${siteUrl}/llms.txt`} title="LLM context" />
+
+  <!-- Schema.org -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": siteName,
+    "url": siteUrl,
+    "description": description,
+    "publisher": {
+      "@type": "Organization",
+      "name": "Color Vivo Internet S.L.",
+      "url": "https://colorvivo.com"
+    },
+    "inLanguage": "es",
+    "about": {
+      "@type": "Thing",
+      "name": "Contratacion publica en Espana",
+      "description": "Datos abiertos de contratacion publica de las administraciones espanolas"
+    }
+  })} />
 </head>
 <body class="bg-gray-950 text-gray-100 antialiased min-h-screen flex flex-col">
   <Nav />
