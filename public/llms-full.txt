@@ -56,7 +56,7 @@
 
 ### BQuant Finance — Dataset historico
 - Portal: https://bquant.io
-- Dataset: https://huggingface.co/datasets/bquantfinance/licitaciones-espana
+- Dataset: https://github.com/BquantFinance/licitaciones-espana
 - Formato: Parquet (965 MB)
 - Registros: 8,69 millones
 - Licencia: Datos abiertos
