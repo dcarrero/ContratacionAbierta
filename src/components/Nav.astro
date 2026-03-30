@@ -2,7 +2,7 @@
 const currentPath = Astro.url.pathname
 const links = [
   { href: '/', label: 'Inicio' },
-  { href: '/fuentes/', label: 'Fuentes de datos' },
+  { href: '/fuentes/', label: 'Fuentes' },
   { href: '/descargas/', label: 'Descargas' },
   { href: '/portales/', label: 'Portales' },
   { href: '/codigo/', label: 'Codigo' },
@@ -11,11 +11,12 @@ const links = [
 
 <nav class="sticky top-0 z-50 bg-gray-950/90 backdrop-blur-sm border-b border-gray-800">
   <div class="max-w-5xl mx-auto px-4 flex items-center justify-between h-14">
-    <a href="/" class="font-bold text-white text-sm tracking-tight">
+    <a href="/" class="font-bold text-white text-sm tracking-tight shrink-0">
       Contratacion <span class="text-blue-400">Abierta</span>
-      <span class="text-gray-600 font-normal ml-1.5 hidden sm:inline">datos</span>
     </a>
-    <div class="flex gap-1">
+
+    <!-- Desktop nav -->
+    <div class="hidden md:flex gap-1">
       {links.map(link => (
         <a
           href={link.href}
@@ -30,5 +31,53 @@ const links = [
         </a>
       ))}
     </div>
+
+    <!-- Mobile hamburger -->
+    <button
+      id="menu-toggle"
+      class="md:hidden p-2 text-gray-400 hover:text-white transition"
+      aria-label="Menu"
+      aria-expanded="false"
+    >
+      <svg id="icon-open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+      <svg id="icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="hidden md:hidden border-t border-gray-800 bg-gray-950/95 backdrop-blur-sm">
+    <div class="px-4 py-3 space-y-1">
+      {links.map(link => (
+        <a
+          href={link.href}
+          class:list={[
+            'block text-sm px-3 py-2 rounded-md transition',
+            currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href))
+              ? 'bg-gray-800 text-white'
+              : 'text-gray-400 hover:text-white hover:bg-gray-800/50',
+          ]}
+        >
+          {link.label}
+        </a>
+      ))}
+    </div>
   </div>
 </nav>
+
+<script>
+  const toggle = document.getElementById('menu-toggle')!
+  const menu = document.getElementById('mobile-menu')!
+  const iconOpen = document.getElementById('icon-open')!
+  const iconClose = document.getElementById('icon-close')!
+
+  toggle.addEventListener('click', () => {
+    const open = menu.classList.toggle('hidden')
+    iconOpen.classList.toggle('hidden', !open)
+    iconClose.classList.toggle('hidden', open)
+    toggle.setAttribute('aria-expanded', String(!open))
+  })
+</script>
