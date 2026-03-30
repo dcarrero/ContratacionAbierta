@@ -1,0 +1,253 @@
+---
+import Layout from '../layouts/Layout.astro'
+import { fuentes } from '../data/fuentes'
+
+const nacionales = fuentes.filter(f => f.tipo === 'nacional')
+const regionales = fuentes.filter(f => f.tipo === 'regional')
+const datasets = fuentes.filter(f => f.tipo === 'dataset')
+---
+
+<Layout title="Datos Abiertos de Contratacion Publica en Espana">
+
+  <!-- Hero -->
+  <header class="relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-blue-950 via-gray-950 to-gray-950"></div>
+    <div class="relative max-w-5xl mx-auto px-4 py-20 sm:py-28 text-center">
+      <p class="text-blue-400 font-mono text-sm tracking-widest uppercase mb-4">Catalogo de fuentes de datos</p>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight">
+        Contratacion Publica
+        <span class="text-blue-400">Abierta</span>
+      </h1>
+      <p class="mt-6 text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
+        Todas las fuentes de datos oficiales de contratacion publica en Espana,
+        organizadas y listas para descargar. Feeds Atom, APIs REST, CSVs y datasets.
+      </p>
+      <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="#fuentes" class="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg transition">
+          Ver fuentes de datos
+        </a>
+        <a href="#descargas" class="px-6 py-3 bg-gray-800 hover:bg-gray-700 text-gray-200 font-semibold rounded-lg border border-gray-700 transition">
+          Descargas directas
+        </a>
+      </div>
+
+      <!-- Stats -->
+      <div class="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-3xl mx-auto">
+        <div>
+          <p class="text-3xl font-bold text-white">5</p>
+          <p class="text-sm text-gray-500 mt-1">Feeds nacionales</p>
+        </div>
+        <div>
+          <p class="text-3xl font-bold text-white">9</p>
+          <p class="text-sm text-gray-500 mt-1">Fuentes regionales</p>
+        </div>
+        <div>
+          <p class="text-3xl font-bold text-white">~8M</p>
+          <p class="text-sm text-gray-500 mt-1">Contratos indexados</p>
+        </div>
+        <div>
+          <p class="text-3xl font-bold text-white">40+</p>
+          <p class="text-sm text-gray-500 mt-1">ZIPs descargables</p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Fuentes nacionales -->
+  <section id="fuentes" class="max-w-5xl mx-auto px-4 py-16">
+    <h2 class="text-2xl font-bold text-white mb-2">Fuentes nacionales</h2>
+    <p class="text-gray-400 mb-8">Feeds de la Plataforma de Contratacion del Sector Publico (Ministerio de Hacienda)</p>
+
+    <div class="space-y-4">
+      {nacionales.map(f => (
+        <div class="bg-gray-900 border border-gray-800 rounded-lg p-5 hover:border-blue-800 transition">
+          <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+            <div class="flex-1">
+              <h3 class="text-lg font-semibold text-white">{f.nombre}</h3>
+              <p class="text-sm text-gray-400 mt-1">{f.descripcion}</p>
+            </div>
+            <div class="flex gap-2 shrink-0">
+              {f.url_datos && (
+                <a href={f.url_datos} target="_blank" rel="noopener"
+                   class="text-xs px-3 py-1.5 bg-blue-900/50 text-blue-300 rounded hover:bg-blue-900 transition">
+                  Fuente oficial
+                </a>
+              )}
+            </div>
+          </div>
+          <dl class="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-1 text-xs">
+            <div><dt class="text-gray-600 inline">Formato:</dt> <dd class="text-gray-400 inline">{f.formato}</dd></div>
+            <div><dt class="text-gray-600 inline">Registros:</dt> <dd class="text-gray-400 inline">{f.registros}</dd></div>
+            <div><dt class="text-gray-600 inline">Cobertura:</dt> <dd class="text-gray-400 inline">{f.cobertura}</dd></div>
+            <div><dt class="text-gray-600 inline">Actualiz.:</dt> <dd class="text-gray-400 inline">{f.actualizacion}</dd></div>
+          </dl>
+          {f.descargas && f.descargas.length > 0 && (
+            <details class="mt-3">
+              <summary class="text-xs text-blue-400 cursor-pointer hover:text-blue-300">
+                {f.descargas.length} archivos ZIP disponibles
+              </summary>
+              <div class="mt-2 flex flex-wrap gap-2">
+                {f.descargas.map(d => (
+                  <a href={d.url} target="_blank" rel="noopener"
+                     class="text-xs px-2 py-1 bg-gray-800 text-gray-300 rounded hover:bg-gray-700 transition font-mono">
+                    {d.periodo}
+                  </a>
+                ))}
+              </div>
+            </details>
+          )}
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Dataset -->
+  <section class="max-w-5xl mx-auto px-4 py-8">
+    <h2 class="text-2xl font-bold text-white mb-2">Datasets</h2>
+    <p class="text-gray-400 mb-8">Datasets procesados y listos para analisis</p>
+
+    <div class="space-y-4">
+      {datasets.map(f => (
+        <div class="bg-gray-900 border border-gray-800 rounded-lg p-5 hover:border-purple-800 transition">
+          <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+            <div>
+              <h3 class="text-lg font-semibold text-white">{f.nombre}</h3>
+              <p class="text-sm text-gray-400 mt-1">{f.descripcion}</p>
+            </div>
+            <a href={f.url_datos} target="_blank" rel="noopener"
+               class="text-xs px-3 py-1.5 bg-purple-900/50 text-purple-300 rounded hover:bg-purple-900 transition shrink-0">
+              Descargar dataset
+            </a>
+          </div>
+          <dl class="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-1 text-xs">
+            <div><dt class="text-gray-600 inline">Formato:</dt> <dd class="text-gray-400 inline">{f.formato}</dd></div>
+            <div><dt class="text-gray-600 inline">Registros:</dt> <dd class="text-gray-400 inline">{f.registros}</dd></div>
+            <div><dt class="text-gray-600 inline">Cobertura:</dt> <dd class="text-gray-400 inline">{f.cobertura}</dd></div>
+            <div><dt class="text-gray-600 inline">Licencia:</dt> <dd class="text-gray-400 inline">{f.licencia}</dd></div>
+          </dl>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Fuentes regionales -->
+  <section class="max-w-5xl mx-auto px-4 py-16">
+    <h2 class="text-2xl font-bold text-white mb-2">Fuentes regionales</h2>
+    <p class="text-gray-400 mb-8">Portales de datos abiertos de comunidades autonomas</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      {regionales.map(f => (
+        <div class="bg-gray-900 border border-gray-800 rounded-lg p-4 hover:border-green-800 transition">
+          <h3 class="font-semibold text-white text-sm">{f.nombre}</h3>
+          <p class="text-xs text-gray-500 mt-1">{f.entidad}</p>
+          <dl class="mt-2 grid grid-cols-2 gap-x-3 gap-y-0.5 text-xs">
+            <div><dt class="text-gray-600 inline">Formato:</dt> <dd class="text-gray-400 inline">{f.formato}</dd></div>
+            <div><dt class="text-gray-600 inline">Registros:</dt> <dd class="text-gray-400 inline">{f.registros}</dd></div>
+            <div><dt class="text-gray-600 inline">Cobertura:</dt> <dd class="text-gray-400 inline">{f.cobertura}</dd></div>
+            <div><dt class="text-gray-600 inline">Actualiz.:</dt> <dd class="text-gray-400 inline">{f.actualizacion}</dd></div>
+          </dl>
+          <div class="mt-3 flex gap-2">
+            <a href={f.url_portal} target="_blank" rel="noopener"
+               class="text-xs px-2 py-1 bg-gray-800 text-gray-300 rounded hover:bg-gray-700 transition">Portal</a>
+            {f.url_datos && (
+              <a href={f.url_datos} target="_blank" rel="noopener"
+                 class="text-xs px-2 py-1 bg-green-900/50 text-green-300 rounded hover:bg-green-900 transition">Datos</a>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Descargas -->
+  <section id="descargas" class="max-w-5xl mx-auto px-4 py-16">
+    <h2 class="text-2xl font-bold text-white mb-2">Descargas directas</h2>
+    <p class="text-gray-400 mb-8">
+      Todos los archivos ZIP de feeds Atom organizados por tipo y ano.
+      Descarga directa desde los servidores oficiales de PLACSP.
+    </p>
+
+    <div class="bg-gray-900 border border-gray-800 rounded-lg p-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {nacionales.filter(f => f.descargas).map(f => (
+          <div>
+            <h3 class="font-semibold text-white text-sm mb-3">{f.nombre.split('\u2014')[1]?.trim() || f.nombre}</h3>
+            <div class="flex flex-wrap gap-1.5">
+              {f.descargas!.map(d => (
+                <a href={d.url} target="_blank" rel="noopener"
+                   class="text-xs px-2 py-1 bg-gray-800 text-gray-300 rounded hover:bg-blue-900 hover:text-blue-200 transition font-mono">
+                  {d.periodo}
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Portales de consulta -->
+  <section class="max-w-5xl mx-auto px-4 py-16">
+    <h2 class="text-2xl font-bold text-white mb-2">Portales de consulta</h2>
+    <p class="text-gray-400 mb-8">Sitios con datos publicos ya tratados y listos para consulta libre</p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <a href="https://contratacionabierta.es" target="_blank" rel="noopener"
+         class="bg-gray-900 border border-gray-800 rounded-lg p-5 hover:border-amber-700 transition group block">
+        <h3 class="font-semibold text-white group-hover:text-amber-300 transition">contratacionabierta.es</h3>
+        <p class="text-xs text-gray-500 mt-1">naroh</p>
+        <p class="text-sm text-gray-400 mt-2">Portal nacional de contratacion abierta con buscador y analisis de datos publicos de toda Espana.</p>
+      </a>
+      <a href="https://contractes.cat" target="_blank" rel="noopener"
+         class="bg-gray-900 border border-gray-800 rounded-lg p-5 hover:border-amber-700 transition group block">
+        <h3 class="font-semibold text-white group-hover:text-amber-300 transition">contractes.cat</h3>
+        <p class="text-xs text-gray-500 mt-1">Ciencia de Dades</p>
+        <p class="text-sm text-gray-400 mt-2">Portal de contratos publicos de Cataluna con visualizaciones y datos abiertos de la Generalitat.</p>
+      </a>
+      <div class="bg-gray-900 border border-dashed border-gray-700 rounded-lg p-5 flex items-center justify-center">
+        <p class="text-sm text-gray-600 text-center">Mas portales proximamente.<br/>
+        <span class="text-xs">Contactanos para incluir el tuyo.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA / Email -->
+  <section class="max-w-5xl mx-auto px-4 py-16">
+    <div class="bg-gradient-to-r from-blue-950 to-gray-900 border border-blue-900/50 rounded-xl p-8 sm:p-12 text-center">
+      <h2 class="text-2xl font-bold text-white">Recibe actualizaciones</h2>
+      <p class="text-gray-400 mt-2 max-w-lg mx-auto">
+        Notificaciones cuando se anadan nuevas fuentes de datos o se actualicen los datasets.
+        Sin spam, solo datos.
+      </p>
+      <form class="mt-6 flex flex-col sm:flex-row gap-3 max-w-md mx-auto" action="#" method="POST">
+        <input
+          type="email"
+          name="email"
+          required
+          placeholder="tu@email.com"
+          class="flex-1 px-4 py-2.5 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
+        />
+        <button type="submit" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg transition">
+          Suscribir
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-gray-800 py-8 text-center text-sm text-gray-500">
+    <div class="max-w-5xl mx-auto px-4 space-y-3">
+      <p>
+        Proyecto de transparencia ciudadana. No es una web oficial.
+      </p>
+      <p class="text-xs text-gray-600">
+        Los datos enlazados son propiedad de sus respectivas administraciones publicas.
+        Las descargas se realizan directamente desde los servidores oficiales.
+      </p>
+      <p class="flex gap-4 justify-center text-gray-400">
+        <a href="https://github.com/dcarrero/contratacion-publica-clm-es" target="_blank" rel="noopener" class="hover:text-white transition">GitHub</a>
+      </p>
+    </div>
+  </footer>
+
+</Layout>
