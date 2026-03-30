@@ -1,0 +1,156 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import { fuentes } from '../../data/fuentes'
+import type { GetStaticPaths } from 'astro'
+
+export const getStaticPaths: GetStaticPaths = () => {
+  return fuentes.map(f => ({ params: { id: f.id }, props: { fuente: f } }))
+}
+
+const { fuente: f } = Astro.props
+const tipoLabel = { nacional: 'Nacional', regional: 'Regional', dataset: 'Dataset' }[f.tipo]
+const tipoColor = { nacional: 'blue', regional: 'green', dataset: 'purple' }[f.tipo]
+---
+
+<Layout
+  title={`${f.nombre} — Datos abiertos de contratacion publica`}
+  description={`${f.descripcion} ${f.registros || ''} registros. Formato: ${f.formato}. Cobertura: ${f.cobertura}.`}
+>
+
+  <div class="max-w-4xl mx-auto px-4 py-12">
+
+    <!-- Breadcrumb -->
+    <nav class="text-xs text-gray-500 mb-6">
+      <a href="/fuentes/" class="hover:text-white transition">Fuentes de datos</a>
+      <span class="mx-2">/</span>
+      <span class="text-gray-300">{f.nombre}</span>
+    </nav>
+
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
+      <div>
+        <div class="flex items-center gap-2 mb-2">
+          <span class={`text-xs px-2 py-0.5 rounded bg-${tipoColor}-900/50 text-${tipoColor}-300`}>{tipoLabel}</span>
+          <span class="text-xs text-gray-600">{f.entidad}</span>
+        </div>
+        <h1 class="text-3xl font-bold text-white">{f.nombre}</h1>
+        <p class="text-gray-400 mt-2">{f.descripcion}</p>
+      </div>
+      <div class="flex gap-2 shrink-0">
+        <a href={f.url_portal} target="_blank" rel="noopener"
+           class="text-sm px-4 py-2 bg-gray-800 text-gray-300 rounded-lg hover:bg-gray-700 transition">Portal</a>
+        {f.url_datos && (
+          <a href={f.url_datos} target="_blank" rel="noopener"
+             class="text-sm px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition">Datos oficiales</a>
+        )}
+      </div>
+    </div>
+
+    <!-- Ficha tecnica -->
+    <section class="bg-gray-900 border border-gray-800 rounded-lg p-6 mb-8">
+      <h2 class="text-lg font-semibold text-white mb-4">Ficha tecnica</h2>
+      <dl class="grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-3 text-sm">
+        <div>
+          <dt class="text-gray-500">Formato</dt>
+          <dd class="text-white font-medium">{f.formato}</dd>
+        </div>
+        {f.registros && (
+          <div>
+            <dt class="text-gray-500">Registros</dt>
+            <dd class="text-white font-medium">{f.registros}</dd>
+          </div>
+        )}
+        <div>
+          <dt class="text-gray-500">Cobertura</dt>
+          <dd class="text-white font-medium">{f.cobertura}</dd>
+        </div>
+        <div>
+          <dt class="text-gray-500">Actualizacion</dt>
+          <dd class="text-white font-medium">{f.actualizacion}</dd>
+        </div>
+        <div>
+          <dt class="text-gray-500">Licencia</dt>
+          <dd class="text-white font-medium">{f.licencia}</dd>
+        </div>
+        <div>
+          <dt class="text-gray-500">Entidad</dt>
+          <dd class="text-white font-medium">{f.entidad}</dd>
+        </div>
+      </dl>
+    </section>
+
+    <!-- Descripcion larga -->
+    {f.descripcion_larga && (
+      <section class="mb-8">
+        <h2 class="text-lg font-semibold text-white mb-3">Descripcion</h2>
+        <div class="text-sm text-gray-400 leading-relaxed space-y-3">
+          {f.descripcion_larga.split('\n\n').map(p => <p>{p}</p>)}
+        </div>
+      </section>
+    )}
+
+    <!-- Campos / estructura -->
+    {f.campos && f.campos.length > 0 && (
+      <section class="mb-8">
+        <h2 class="text-lg font-semibold text-white mb-3">Estructura de datos</h2>
+        <div class="bg-gray-900 border border-gray-800 rounded-lg p-4">
+          <ul class="text-sm text-gray-400 space-y-1 font-mono">
+            {f.campos.map(c => {
+              const [campo, desc] = c.split(' — ')
+              return (
+                <li>
+                  <span class="text-blue-300">{campo}</span>
+                  {desc && <span class="text-gray-600"> — {desc}</span>}
+                </li>
+              )
+            })}
+          </ul>
+        </div>
+      </section>
+    )}
+
+    <!-- Ejemplos de codigo -->
+    {f.ejemplos && f.ejemplos.length > 0 && (
+      <section class="mb-8">
+        <h2 class="text-lg font-semibold text-white mb-3">Ejemplos de codigo</h2>
+        <div class="space-y-4">
+          {f.ejemplos.map(ej => (
+            <div class="bg-gray-900 border border-gray-800 rounded-lg overflow-hidden">
+              <div class="flex items-center justify-between px-4 py-2 bg-gray-800/50 border-b border-gray-800">
+                <span class="text-sm text-white font-medium">{ej.titulo}</span>
+                <span class="text-xs text-gray-500 font-mono">{ej.lenguaje}</span>
+              </div>
+              <pre class="p-4 text-xs text-gray-300 overflow-x-auto"><code>{ej.codigo}</code></pre>
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Descargas -->
+    {f.descargas && f.descargas.length > 0 && (
+      <section class="mb-8">
+        <h2 class="text-lg font-semibold text-white mb-3">Archivos disponibles</h2>
+        <div class="bg-gray-900 border border-gray-800 rounded-lg p-4">
+          <div class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-8 gap-2">
+            {f.descargas.map(d => (
+              <a href={d.url} target="_blank" rel="noopener"
+                 class="text-center text-xs px-2 py-2 bg-gray-800 text-gray-300 rounded hover:bg-blue-900 hover:text-blue-200 transition font-mono border border-gray-700 hover:border-blue-700">
+                {d.periodo}
+              </a>
+            ))}
+          </div>
+          <p class="text-xs text-gray-600 mt-3">Descarga directa desde servidores oficiales. Formato: {f.descargas[0].formato}.</p>
+        </div>
+      </section>
+    )}
+
+    <!-- Nav -->
+    <div class="flex justify-between items-center pt-8 border-t border-gray-800">
+      <a href="/fuentes/" class="text-sm text-gray-400 hover:text-white transition">&larr; Todas las fuentes</a>
+      <a href="/descargas/" class="text-sm text-gray-400 hover:text-white transition">Descargas directas &rarr;</a>
+    </div>
+
+  </div>
+
+</Layout>
