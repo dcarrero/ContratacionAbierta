@@ -1,0 +1,88 @@
+---
+import Layout from '../layouts/Layout.astro'
+import { fuentes } from '../data/fuentes'
+
+const conDescargas = fuentes.filter(f => f.descargas && f.descargas.length > 0)
+const totalZips = conDescargas.reduce((sum, f) => sum + (f.descargas?.length || 0), 0)
+---
+
+<Layout
+  title="Descargas de datos de contratacion publica — ZIPs oficiales PLACSP"
+  description="Descarga directa de archivos ZIP con datos de contratacion publica de Espana desde los servidores oficiales de PLACSP. Licitaciones, contratos menores, plataformas agregadas y encargos a medios propios."
+>
+
+  <div class="max-w-5xl mx-auto px-4 py-12">
+    <h1 class="text-3xl font-bold text-white mb-2">Descargas directas</h1>
+    <p class="text-gray-400 mb-4">
+      {totalZips} archivos ZIP con datos de contratacion publica, organizados por tipo y ano.
+      Descarga directa desde los servidores oficiales de PLACSP.
+    </p>
+    <p class="text-xs text-gray-600 mb-12">
+      Los archivos contienen feeds Atom XML con formato CODICE 2.07. Cada ZIP incluye multiples ficheros
+      .atom con hasta 500 entries cada uno, encadenados por paginacion.
+    </p>
+
+    <div class="space-y-10">
+      {conDescargas.map(f => (
+        <section class="bg-gray-900 border border-gray-800 rounded-lg p-6">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+            <div>
+              <h2 class="text-lg font-semibold text-white">{f.nombre}</h2>
+              <p class="text-xs text-gray-500 mt-0.5">{f.descripcion}</p>
+            </div>
+            <div class="flex gap-2 shrink-0">
+              {f.url_datos && (
+                <a href={f.url_datos} target="_blank" rel="noopener"
+                   class="text-xs px-3 py-1.5 bg-blue-900/50 text-blue-300 rounded hover:bg-blue-900 transition">
+                  Fuente oficial
+                </a>
+              )}
+            </div>
+          </div>
+
+          <dl class="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-1 text-xs mb-5">
+            <div><dt class="text-gray-600 inline">Formato:</dt> <dd class="text-gray-400 inline">{f.formato}</dd></div>
+            <div><dt class="text-gray-600 inline">Registros:</dt> <dd class="text-gray-400 inline">{f.registros}</dd></div>
+            <div><dt class="text-gray-600 inline">Cobertura:</dt> <dd class="text-gray-400 inline">{f.cobertura}</dd></div>
+            <div><dt class="text-gray-600 inline">Actualiz.:</dt> <dd class="text-gray-400 inline">{f.actualizacion}</dd></div>
+          </dl>
+
+          <div class="border-t border-gray-800 pt-4">
+            <p class="text-xs text-gray-500 mb-3">{f.descargas!.length} archivos disponibles:</p>
+            <div class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-8 lg:grid-cols-10 gap-2">
+              {f.descargas!.map(d => (
+                <a href={d.url} target="_blank" rel="noopener"
+                   class="text-center text-xs px-2 py-2 bg-gray-800 text-gray-300 rounded hover:bg-blue-900 hover:text-blue-200 transition font-mono border border-gray-700 hover:border-blue-700">
+                  {d.periodo}
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+      ))}
+    </div>
+
+    <!-- Nota tecnica -->
+    <section class="mt-16 bg-gray-900/50 border border-gray-800 rounded-lg p-6">
+      <h2 class="text-lg font-semibold text-white mb-3">Nota tecnica</h2>
+      <div class="text-sm text-gray-400 space-y-2">
+        <p>
+          Los ZIPs anuales se actualizan diariamente con los cambios del dia anterior.
+          Los ZIPs mensuales son snapshots fijos del mes correspondiente.
+        </p>
+        <p>
+          Cada ZIP contiene ficheros <code class="text-gray-300 bg-gray-800 px-1 rounded">.atom</code> con
+          maximo 500 entries, encadenados mediante <code class="text-gray-300 bg-gray-800 px-1 rounded">&lt;link rel="next"&gt;</code>.
+          El formato XML sigue la especificacion CODICE 2.07 del Ministerio de Hacienda.
+        </p>
+        <p>
+          Para descargar con <code class="text-gray-300 bg-gray-800 px-1 rounded">curl</code>, usa la flag
+          <code class="text-gray-300 bg-gray-800 px-1 rounded">-k</code> si el certificado SSL da problemas:
+        </p>
+        <pre class="bg-gray-800 text-gray-300 p-3 rounded text-xs overflow-x-auto mt-2">curl -sLk -o licitaciones_2025.zip "https://contrataciondelsectorpublico.gob.es/sindicacion/sindicacion_643/licitacionesPerfilesContratanteCompleto3_2025.zip"</pre>
+      </div>
+    </section>
+
+  </div>
+
+</Layout>

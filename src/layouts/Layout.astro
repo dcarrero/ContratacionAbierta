@@ -1,12 +1,14 @@
 ---
 import '../styles/global.css'
+import Nav from '../components/Nav.astro'
+import Footer from '../components/Footer.astro'
 
 interface Props {
   title: string
   description?: string
 }
 
-const { title, description = 'Catálogo de fuentes de datos abiertos de contratación pública en España. Accede a feeds oficiales, descarga datasets y construye sobre datos públicos.' } = Astro.props
+const { title, description = 'Catalogo de fuentes de datos abiertos de contratacion publica en Espana. Accede a feeds oficiales, descarga datasets y construye sobre datos publicos.' } = Astro.props
 ---
 
 <!doctype html>
@@ -16,9 +18,17 @@ const { title, description = 'Catálogo de fuentes de datos abiertos de contrata
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content={description} />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="canonical" href={Astro.url.href} />
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="website" />
   <title>{title}</title>
 </head>
-<body class="bg-gray-950 text-gray-100 antialiased">
-  <slot />
+<body class="bg-gray-950 text-gray-100 antialiased min-h-screen flex flex-col">
+  <Nav />
+  <main class="flex-1">
+    <slot />
+  </main>
+  <Footer />
 </body>
 </html>

@@ -1,0 +1,33 @@
+---
+const currentPath = Astro.url.pathname
+const links = [
+  { href: '/', label: 'Inicio' },
+  { href: '/fuentes/', label: 'Fuentes de datos' },
+  { href: '/descargas/', label: 'Descargas' },
+  { href: '/portales/', label: 'Portales' },
+]
+---
+
+<nav class="sticky top-0 z-50 bg-gray-950/90 backdrop-blur-sm border-b border-gray-800">
+  <div class="max-w-5xl mx-auto px-4 flex items-center justify-between h-14">
+    <a href="/" class="font-bold text-white text-sm tracking-tight">
+      Contratacion <span class="text-blue-400">Abierta</span>
+      <span class="text-gray-600 font-normal ml-1.5 hidden sm:inline">datos</span>
+    </a>
+    <div class="flex gap-1">
+      {links.map(link => (
+        <a
+          href={link.href}
+          class:list={[
+            'text-sm px-3 py-1.5 rounded-md transition',
+            currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href))
+              ? 'bg-gray-800 text-white'
+              : 'text-gray-400 hover:text-white hover:bg-gray-800/50',
+          ]}
+        >
+          {link.label}
+        </a>
+      ))}
+    </div>
+  </div>
+</nav>
