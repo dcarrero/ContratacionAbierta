@@ -41,8 +41,10 @@ src/
 ├── pages/
 │   ├── index.astro        # Home
 │   ├── fuentes.astro      # Fuentes de datos (nacionales + regionales)
+│   ├── fuentes/[id].astro # Ficha individual por fuente
 │   ├── descargas.astro    # Descargas directas de ZIPs
 │   ├── portales.astro     # Portales de consulta ciudadana
+│   ├── codigo.astro       # Código y recursos open source
 │   ├── aviso-legal.astro  # Aviso legal
 │   ├── privacidad.astro   # Política de privacidad
 │   └── cookies.astro      # Política de cookies

@@ -8,20 +8,20 @@ const datasets = fuentes.filter(f => f.tipo === 'dataset')
 ---
 
 <Layout
-  title="Fuentes de datos de contratacion publica en Espana"
-  description="Catalogo completo de fuentes oficiales de datos abiertos de contratacion publica: PLACSP, APIs regionales, portales de datos abiertos de CCAA y datasets historicos."
+  title="Fuentes de datos de contratacion publica y subvenciones en Espana"
+  description="Catalogo completo de fuentes oficiales de datos abiertos de contratacion publica y subvenciones: PLACSP, BDNS, APIs regionales, portales de datos abiertos de CCAA y datasets historicos."
 >
 
   <div class="max-w-5xl mx-auto px-4 py-12">
     <h1 class="text-3xl font-bold text-white mb-2">Fuentes de datos</h1>
     <p class="text-gray-400 mb-12">
-      {fuentes.length} fuentes oficiales de contratacion publica en Espana, organizadas por ambito y formato.
+      {fuentes.length} fuentes oficiales de contratacion publica y subvenciones en Espana, organizadas por ambito y formato.
     </p>
 
     <!-- Nacionales -->
     <section class="mb-16">
       <h2 class="text-xl font-bold text-white mb-1">Fuentes nacionales</h2>
-      <p class="text-sm text-gray-500 mb-6">Feeds de la Plataforma de Contratacion del Sector Publico (Ministerio de Hacienda)</p>
+      <p class="text-sm text-gray-500 mb-6">Feeds y APIs del Estado: Plataforma de Contratacion del Sector Publico y Base de Datos Nacional de Subvenciones (Ministerio de Hacienda)</p>
 
       <div class="space-y-4">
         {nacionales.map(f => (

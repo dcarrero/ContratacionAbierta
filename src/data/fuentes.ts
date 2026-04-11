@@ -286,6 +286,97 @@ Utiles para empresas que quieran anticipar oportunidades de licitacion. Publicad
     }),
   },
   {
+    id: 'bdns',
+    nombre: 'BDNS — Base de Datos Nacional de Subvenciones',
+    descripcion: 'Sistema Nacional de Publicidad de Subvenciones y Ayudas Publicas. Convocatorias, concesiones, planes estrategicos y grandes beneficiarios de todas las administraciones espanolas (AGE, CCAA, entidades locales, universidades). API REST publica sin autenticacion.',
+    tipo: 'nacional',
+    entidad: 'IGAE — Ministerio de Hacienda',
+    url_portal: 'https://www.infosubvenciones.es/bdnstrans/GE/es/index',
+    url_datos: 'https://www.infosubvenciones.es/bdnstrans/doc/swagger',
+    formato: 'REST API (JSON)',
+    registros: '~10,5M concesiones / ~350.000 convocatorias',
+    cobertura: 'Desde 2016',
+    actualizacion: 'Continua',
+    licencia: 'Datos abiertos',
+    descripcion_larga: `La Base de Datos Nacional de Subvenciones (BDNS) es el sistema oficial de publicidad de subvenciones y ayudas publicas en Espana, regulado por la Ley 38/2003 General de Subvenciones (tras la reforma de la Ley 15/2014). Gestionada por la Intervencion General de la Administracion del Estado (IGAE) del Ministerio de Hacienda y Funcion Publica, centraliza la informacion de todas las ayudas concedidas por la AGE, las comunidades autonomas, las entidades locales, las universidades publicas y demas entes del sector publico estatal.
+
+El Sistema Nacional de Publicidad de Subvenciones y Ayudas Publicas (SNPSAP) expone esta informacion a traves de un portal ciudadano en infosubvenciones.es y de una API REST publica documentada con Swagger/OpenAPI. La API permite consultar convocatorias, concesiones individuales, planes estrategicos, listados de grandes beneficiarios y sanciones, con filtros por fecha, organo convocante, jerarquia territorial (nivel1/nivel2/nivel3), instrumento de la ayuda, CPV y otros criterios.
+
+Desde la renovacion del portal por Hacienda, es posible descargar conjuntos de datos completos ademas de consultar la API en tiempo real. El acceso a los endpoints publicos no requiere registro ni clave de API.`,
+    campos: [
+      'codigoBDNS — Codigo unico de la convocatoria',
+      'titulo / descripcion — Objeto de la convocatoria',
+      'nivel1 / nivel2 / nivel3 — Jerarquia territorial del organo convocante',
+      'organo — Organo que convoca la ayuda',
+      'fechaRecepcion / fechaPublicacion — Fechas de tramitacion',
+      'tiposBeneficiarios — Tipos de beneficiarios elegibles',
+      'instrumentos — Instrumento (subvencion, prestamo, aval, entrega dineraria...)',
+      'importeTotal — Importe maximo de la convocatoria',
+      'descripcionFinalidad — Finalidad de la ayuda (sector/objetivo)',
+      'convocatoriaBases — URL de las bases reguladoras',
+      'beneficiario — NIF/CIF y nombre del beneficiario (en concesiones)',
+      'importe — Importe concedido (en concesiones)',
+      'ayudaEstado / ayudaDeMinimis — Clasificacion juridica de la ayuda',
+    ],
+    ejemplos: [
+      {
+        lenguaje: 'curl',
+        titulo: 'Buscar convocatorias recientes',
+        codigo: `# Documentacion Swagger de la API
+open https://www.infosubvenciones.es/bdnstrans/doc/swagger
+
+# Buscar convocatorias publicadas en 2025
+curl -s "https://www.infosubvenciones.es/bdnstrans/api/convocatorias/busqueda?fechaDesde=01/01/2025&fechaHasta=31/12/2025&pageSize=50&page=0" \\
+  -H "Accept: application/json" | python3 -m json.tool`,
+      },
+      {
+        lenguaje: 'python',
+        titulo: 'Paginar convocatorias con requests',
+        codigo: `import requests
+
+BASE = 'https://www.infosubvenciones.es/bdnstrans/api'
+session = requests.Session()
+session.headers.update({'Accept': 'application/json'})
+
+page = 0
+while True:
+    resp = session.get(f'{BASE}/convocatorias/busqueda', params={
+        'fechaDesde': '01/01/2025',
+        'fechaHasta': '31/12/2025',
+        'pageSize': 100,
+        'page': page,
+    })
+    resp.raise_for_status()
+    data = resp.json()
+    items = data.get('content', [])
+    if not items:
+        break
+    for c in items:
+        print(c.get('codigoBDNS'), '-', (c.get('descripcion') or '')[:80])
+    page += 1`,
+      },
+      {
+        lenguaje: 'python',
+        titulo: 'Descargar concesiones por NIF beneficiario',
+        codigo: `import requests
+
+BASE = 'https://www.infosubvenciones.es/bdnstrans/api'
+
+# Concesiones de un NIF concreto en un rango de fechas
+resp = requests.get(f'{BASE}/concesiones/busqueda', params={
+    'numeroIdentificacion': 'B12345678',
+    'fechaDesde': '01/01/2024',
+    'fechaHasta': '31/12/2025',
+    'pageSize': 200,
+    'page': 0,
+}, headers={'Accept': 'application/json'})
+
+for c in resp.json().get('content', []):
+    print(f"{c.get('fechaConcesion')} | {c.get('importe')} EUR | BDNS {c.get('codigoBDNS')}")`,
+      },
+    ],
+  },
+  {
     id: 'bquant',
     nombre: 'BQuant Finance — Dataset historico',
     descripcion: 'Dataset de 8,69 millones de registros historicos de licitaciones publicas recopilados y estructurados por BQuant Finance. Formato Parquet optimizado para analisis.',
@@ -500,6 +591,87 @@ while True:
     cobertura: 'Desde 2015',
     actualizacion: 'Trimestral',
     licencia: 'Datos abiertos JCyL',
+  },
+  {
+    id: 'cyl-subvenciones',
+    nombre: 'Castilla y Leon — Subvenciones concedidas',
+    descripcion: 'Subvenciones registradas como concedidas en la BDNS por la administracion autonomica de Castilla y Leon. Publicadas en el portal de analisis de datos abiertos de la Junta con API Opendatasoft, CSV, JSON y Excel.',
+    tipo: 'regional',
+    entidad: 'Junta de Castilla y Leon',
+    url_portal: 'https://analisis.datosabiertos.jcyl.es/explore/dataset/subvenciones-concedidas/information/',
+    url_datos: 'https://analisis.datosabiertos.jcyl.es/api/explore/v2.1/catalog/datasets/subvenciones-concedidas/records',
+    formato: 'CSV/JSON/XLS + API Opendatasoft',
+    cobertura: 'Desde 2016',
+    actualizacion: 'No programada',
+    licencia: 'CC BY 4.0',
+    descripcion_larga: `Dataset del portal de analisis de datos abiertos de la Junta de Castilla y Leon que expone las subvenciones concedidas por la administracion autonomica castellanoleonesa, tomando como origen la Base de Datos Nacional de Subvenciones (BDNS) gestionada por la IGAE del Ministerio de Hacienda.
+
+Incluye dos magnitudes principales: el importe de concesion (cantidad comprometida en el momento del otorgamiento) y la ayuda equivalente (importe tras descontar cargas fiscales; en el caso de subvenciones suele coincidir con el importe de concesion). El portal utiliza el motor Opendatasoft, que expone una API REST documentada con endpoints de consulta, exportacion y agregacion, ademas de descargas directas en CSV, JSON y Excel.
+
+El dataset excluye convocatorias con mas de 10.000 registros por limitaciones de exportacion de la propia BDNS. La actualizacion no sigue un calendario programado. Esta publicacion cumple con lo previsto en el Real Decreto 130/2019 sobre publicidad de subvenciones y ayudas publicas.`,
+    ejemplos: [
+      {
+        lenguaje: 'curl',
+        titulo: 'Consultar API Opendatasoft',
+        codigo: `# Primeros 20 registros en JSON
+curl -s "https://analisis.datosabiertos.jcyl.es/api/explore/v2.1/catalog/datasets/subvenciones-concedidas/records?limit=20" | python3 -m json.tool
+
+# Descargar dataset completo en CSV
+curl -sL -o subvenciones_cyl.csv \\
+  "https://analisis.datosabiertos.jcyl.es/api/explore/v2.1/catalog/datasets/subvenciones-concedidas/exports/csv"
+
+# Agregado: importe total por ano de concesion
+curl -s "https://analisis.datosabiertos.jcyl.es/api/explore/v2.1/catalog/datasets/subvenciones-concedidas/records?select=year(fecha_de_la_concesion)%20as%20anio,sum(importe)%20as%20total&group_by=anio&order_by=anio"`,
+      },
+      {
+        lenguaje: 'python',
+        titulo: 'Paginar con requests',
+        codigo: `import requests
+
+BASE = 'https://analisis.datosabiertos.jcyl.es/api/explore/v2.1/catalog/datasets/subvenciones-concedidas/records'
+
+offset = 0
+while True:
+    resp = requests.get(BASE, params={'limit': 100, 'offset': offset})
+    resp.raise_for_status()
+    results = resp.json().get('results', [])
+    if not results:
+        break
+    for r in results:
+        print(r.get('fecha_de_la_concesion'), r.get('beneficiario'), r.get('importe'))
+    offset += 100`,
+      },
+    ],
+  },
+  {
+    id: 'clm-subvenciones',
+    nombre: 'Castilla-La Mancha — Subvenciones concedidas',
+    descripcion: 'Base de datos publica de subvenciones concedidas por la Junta de Comunidades de Castilla-La Mancha y su sector publico vinculado, con buscador avanzado y exportacion directa en CSV y XLS. Fuente: Intervencion General de la JCCM.',
+    tipo: 'regional',
+    entidad: 'Junta de Comunidades de Castilla-La Mancha',
+    url_portal: 'https://datosabiertos.castillalamancha.es/dataset/base-de-datos-de-subvenciones-de-castilla-la-mancha',
+    url_datos: 'http://concesiones.castillalamancha.es/Concesion.php',
+    formato: 'CSV / XLS (buscador web)',
+    cobertura: 'Desde 2014',
+    actualizacion: 'Continua',
+    licencia: 'Datos abiertos JCCM',
+    descripcion_larga: `Base de datos oficial de subvenciones y ayudas concedidas por la Administracion de la Junta de Comunidades de Castilla-La Mancha y su sector publico vinculado o dependiente. La fuente de los datos es la Intervencion General de la JCCM. El dataset se publica en el portal de datos abiertos de Castilla-La Mancha y se accede a traves de una aplicacion web de consulta en concesiones.castillalamancha.es.
+
+El buscador permite filtrar por convocatoria, finalidad, organismo responsable, rango de fechas de concesion, beneficiario (nombre o NIF/CIF), tipo de subvencion (convocatoria o directa), tipo de beneficiario (personas fisicas, empresas, PYMES) y rangos de importe. Para cada concesion se muestra el estado (pagado, justificado, reintegros). Los resultados pueden exportarse directamente como listado CSV o XLS.
+
+La cobertura temporal arranca el 1 de enero de 2014. No se publican subvenciones cuando ello pudiera vulnerar derechos al honor, la intimidad o la privacidad conforme a la Ley Organica 1/1982.`,
+    ejemplos: [
+      {
+        lenguaje: 'curl',
+        titulo: 'Pagina de busqueda y exportacion',
+        codigo: `# La descarga se realiza desde la UI web tras aplicar filtros.
+# Abre la aplicacion de consulta:
+open "http://concesiones.castillalamancha.es/Concesion.php"
+
+# Tras filtrar (por ejemplo, fechas 2024-2025 y tipo "Convocatoria"),
+# pulsa "Listado CSV" o "Listado XLS" para descargar el conjunto filtrado.`,
+      },
+    ],
   },
   {
     id: 'can',
