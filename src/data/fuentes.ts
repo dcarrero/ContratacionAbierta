@@ -726,4 +726,357 @@ open "http://concesiones.castillalamancha.es/Concesion.php"
     actualizacion: 'Diaria',
     licencia: 'Datos abiertos Madrid',
   },
+  {
+    id: 'cat-subvenciones',
+    nombre: 'Catalunya — RAISC (Concesiones y convocatorias)',
+    descripcion: 'Registre d\'Ajuts i Subvencions de Catalunya (RAISC) de la Generalitat. Dos datasets Socrata con >21 millones de concesiones y 64.000 convocatorias de la Generalitat, diputaciones y ayuntamientos catalanes. La fuente mas rica de subvenciones de toda Espana.',
+    tipo: 'regional',
+    entidad: 'Generalitat de Catalunya',
+    url_portal: 'https://analisi.transparenciacatalunya.cat/Economia/Concessions-del-RAISC-Registre-de-subvencions-i-aj/s9xt-n979',
+    url_datos: 'https://analisi.transparenciacatalunya.cat/resource/s9xt-n979.json',
+    formato: 'API Socrata (JSON/CSV/XML + SoQL)',
+    registros: '~21,1 millones concesiones / ~64.000 convocatorias',
+    cobertura: 'Desde noviembre 2018',
+    actualizacion: 'Continua',
+    licencia: 'CC BY (datos abiertos Generalitat)',
+    descripcion_larga: `El Registre d'Ajuts i Subvencions de Catalunya (RAISC) es el registro oficial de subvenciones y ayudas publicas de Catalunya, gestionado por la Generalitat y publicado como dos datasets Socrata en el portal de transparencia de la Generalitat. Contiene datos de la Generalitat, las cuatro diputaciones provinciales (Barcelona, Girona, Lleida, Tarragona) y los ayuntamientos catalanes.
+
+El dataset de **concesiones** (s9xt-n979) supera los 21 millones de registros — es con diferencia la mayor fuente regional de subvenciones de Espana. El dataset de **convocatorias** (khxn-nv6a) tiene alrededor de 64.000 entradas. Ambos estan accesibles a traves de la API Socrata estandar, que soporta filtros SoQL (select, where, group_by, order_by), paginacion con $limit/$offset y exportacion en JSON, CSV y XML. No requiere autenticacion ni API key.
+
+Como fuente, es un superconjunto del BDNS para el ambito catalan: incluye mas ayuntamientos y un historico mas detallado que lo que expone la BDNS nacional filtrada por Catalunya.`,
+    campos: [
+      'id_concessio — Identificador unico de la concesion',
+      'id_convocatoria — Identificador de la convocatoria asociada',
+      'organ — Organo concedente',
+      'beneficiari — Nombre del beneficiario',
+      'nif_beneficiari — NIF/CIF del beneficiario',
+      'tipus_beneficiari — Tipo (persona fisica, empresa, entidad sin animo de lucro, etc.)',
+      'import_concedit — Importe concedido (EUR)',
+      'data_concessio — Fecha de concesion',
+      'instrument — Instrumento (subvencion, prestamo, etc.)',
+      'finalitat — Finalidad de la ayuda',
+      'sector — Sector tematico',
+    ],
+    ejemplos: [
+      {
+        lenguaje: 'curl',
+        titulo: 'Consultar API Socrata (RAISC)',
+        codigo: `# Contar concesiones totales
+curl -s "https://analisi.transparenciacatalunya.cat/resource/s9xt-n979.json?\\$select=count(*)"
+
+# Primeras 10 concesiones
+curl -s "https://analisi.transparenciacatalunya.cat/resource/s9xt-n979.json?\\$limit=10" | python3 -m json.tool
+
+# Top 20 beneficiarios por importe total
+curl -s "https://analisi.transparenciacatalunya.cat/resource/s9xt-n979.json?\\$select=beneficiari,sum(import_concedit)%20as%20total&\\$group=beneficiari&\\$order=total%20DESC&\\$limit=20"
+
+# Convocatorias del dataset secundario
+curl -s "https://analisi.transparenciacatalunya.cat/resource/khxn-nv6a.json?\\$limit=10" | python3 -m json.tool`,
+      },
+      {
+        lenguaje: 'python',
+        titulo: 'Paginar con sodapy',
+        codigo: `from sodapy import Socrata
+
+client = Socrata("analisi.transparenciacatalunya.cat", None)
+
+# Concesiones filtradas por fecha
+offset = 0
+while True:
+    batch = client.get("s9xt-n979",
+        where="data_concessio > '2025-01-01'",
+        limit=2000,
+        offset=offset)
+    if not batch:
+        break
+    for r in batch:
+        print(r.get('data_concessio'), r.get('beneficiari'), r.get('import_concedit'))
+    offset += 2000`,
+      },
+      {
+        lenguaje: 'python',
+        titulo: 'Agregado con polars',
+        codigo: `import polars as pl
+import requests
+
+# Agregado por organo concedente (top 50)
+url = 'https://analisi.transparenciacatalunya.cat/resource/s9xt-n979.json'
+params = {
+    '$select': 'organ,count(*) as n,sum(import_concedit) as total',
+    '$group': 'organ',
+    '$order': 'total DESC',
+    '$limit': 50,
+}
+data = requests.get(url, params=params).json()
+df = pl.DataFrame(data)
+print(df)`,
+      },
+    ],
+  },
+  {
+    id: 'anda-subvenciones',
+    nombre: 'Andalucia — Subvenciones otorgadas',
+    descripcion: 'API REST oficial de la Junta de Andalucia con todas las subvenciones otorgadas por la administracion andaluza. Endpoint propio con OpenAPI, descarga integral en JSON o CSV, actualizacion diaria y licencia CC BY 4.0.',
+    tipo: 'regional',
+    entidad: 'Junta de Andalucia',
+    url_portal: 'https://www.juntadeandalucia.es/datosabiertos/portal/dataset/subvenciones-otorgadas-por-la-junta-de-andalucia',
+    url_datos: 'https://datos.juntadeandalucia.es/api/v0/subventions/all?format=json',
+    formato: 'API REST (JSON/CSV) + OpenAPI',
+    cobertura: 'Actualizacion diaria',
+    actualizacion: 'Diaria',
+    licencia: 'CC BY 4.0',
+    descripcion_larga: `Dataset oficial de la Junta de Andalucia con todas las subvenciones otorgadas por la administracion autonomica andaluza. Publicado por la Consejeria de Economia, Hacienda, Fondos Europeos y Dialogo Social. La actualizacion es diaria y la licencia es CC BY 4.0.
+
+A diferencia de otras fuentes regionales que solo ofrecen descarga de CSV o mirror de BDNS, Andalucia expone una API REST propia con OpenAPI documentado (/api/v0/subventions/openapi.json). El endpoint /all?format=json devuelve el dataset completo como JSON (en torno a 38 MB) y /all?format=csv lo entrega como CSV. La API esta alojada en el subdominio datos.juntadeandalucia.es y redirige a ficheros generados en festa.juntadeandalucia.es (Portal Andaluz de Datos Abiertos).`,
+    ejemplos: [
+      {
+        lenguaje: 'curl',
+        titulo: 'Descargar dataset completo',
+        codigo: `# Descarga JSON completa (~38 MB)
+curl -sL -o subvenciones_andalucia.json \\
+  "https://datos.juntadeandalucia.es/api/v0/subventions/all?format=json"
+
+# O en CSV
+curl -sL -o subvenciones_andalucia.csv \\
+  "https://datos.juntadeandalucia.es/api/v0/subventions/all?format=csv"
+
+# Inspeccionar OpenAPI spec
+curl -s "https://datos.juntadeandalucia.es/api/v0/subventions/openapi.json" | python3 -m json.tool | head -40`,
+      },
+      {
+        lenguaje: 'python',
+        titulo: 'Cargar dataset con pandas',
+        codigo: `import pandas as pd
+
+df = pd.read_json('https://datos.juntadeandalucia.es/api/v0/subventions/all?format=json')
+print(f'Registros: {len(df):,}')
+print(df.columns.tolist())
+print(df.head())
+
+# Top beneficiarios por importe
+top = df.groupby('nombre_beneficiario')['importe'].sum().sort_values(ascending=False).head(20)
+print(top)`,
+      },
+    ],
+  },
+  {
+    id: 'eusk-subvenciones',
+    nombre: 'Pais Vasco — Ayudas concedidas (Euskadi)',
+    descripcion: 'Open Data Euskadi — dataset unificado de ayudas y subvenciones concedidas por el Gobierno Vasco, las tres diputaciones forales y los ayuntamientos adheridos. Alimentado desde BDNS, disponible en JSON descargable.',
+    tipo: 'regional',
+    entidad: 'Gobierno Vasco',
+    url_portal: 'https://opendata.euskadi.eus/webopd00-dataset/es/contenidos/ds_ayudas_subvenciones/ayudas_concedidas_euskadi_bdns/es_def/index.shtml',
+    url_datos: 'https://opendata.euskadi.eus/contenidos/ds_ayudas_subvenciones/ayudas_concedidas_euskadi_bdns/opendata/ayudas_concedidas_euskadi.json',
+    formato: 'JSON (descarga directa)',
+    cobertura: 'Desde 2018',
+    actualizacion: 'Periodica (alimentada desde BDNS)',
+    licencia: 'Datos abiertos Euskadi',
+    descripcion_larga: `Dataset de Open Data Euskadi que unifica las ayudas y subvenciones concedidas por el Gobierno Vasco, las tres diputaciones forales (Araba, Bizkaia, Gipuzkoa) y los ayuntamientos adheridos. La fuente es la Base de Datos Nacional de Subvenciones (BDNS) filtrada al ambito de Euskadi, reestructurada y republicada por el portal vasco.
+
+Ademas del JSON unificado, el portal ofrece series temporales anuales (2018-2025), un dataset de "ultimos 90 dias" y, en algunos casos, datasets especificos por entidad (como el Ayuntamiento de Bilbao). Open Data Euskadi es uno de los portales mas maduros de Espana, con API REST general documentada en opendata.euskadi.eus/apis/.`,
+    ejemplos: [
+      {
+        lenguaje: 'curl',
+        titulo: 'Descargar JSON unificado',
+        codigo: `# Descargar dataset unificado
+curl -sL -o ayudas_euskadi.json \\
+  "https://opendata.euskadi.eus/contenidos/ds_ayudas_subvenciones/ayudas_concedidas_euskadi_bdns/opendata/ayudas_concedidas_euskadi.json"
+
+# Ver cuantos registros trae
+python3 -c "import json; print(len(json.load(open('ayudas_euskadi.json'))))"`,
+      },
+      {
+        lenguaje: 'python',
+        titulo: 'Analisis con pandas',
+        codigo: `import pandas as pd
+import requests
+
+url = 'https://opendata.euskadi.eus/contenidos/ds_ayudas_subvenciones/ayudas_concedidas_euskadi_bdns/opendata/ayudas_concedidas_euskadi.json'
+df = pd.DataFrame(requests.get(url).json())
+
+print(f'Registros: {len(df):,}')
+print(df.dtypes)
+
+# Top organos concedentes
+print(df.groupby('organo_concedente')['importe'].sum().sort_values(ascending=False).head(15))`,
+      },
+    ],
+  },
+  {
+    id: 'val-subvenciones',
+    nombre: 'Comunitat Valenciana — Ayudas y subvenciones GVA',
+    descripcion: 'Dataset CKAN de la Generalitat Valenciana con las ayudas y subvenciones concedidas por la GVA. Publicadas por ano como datasets independientes (eco-gvo-subv-YYYY) desde 2019, descargables en CSV, JSON y XML.',
+    tipo: 'regional',
+    entidad: 'Generalitat Valenciana',
+    url_portal: 'https://dadesobertes.gva.es/es/dataset/eco-gvo-subv-2025',
+    url_datos: 'https://dadesobertes.gva.es/es/api/3/action/package_show?id=eco-gvo-subv-2025',
+    formato: 'CSV/JSON/XML (CKAN multi-ano)',
+    cobertura: 'Desde 2019 (un dataset por ano)',
+    actualizacion: 'Continua (los ultimos 2 meses no son definitivos)',
+    licencia: 'CC BY',
+    descripcion_larga: `La Generalitat Valenciana publica las ayudas y subvenciones concedidas por la GVA en el portal dadesobertes.gva.es como una serie de datasets anuales independientes: eco-gvo-subv-2019, eco-gvo-subv-2020, ..., eco-gvo-subv-2025. Cada dataset tiene sus propios recursos (CSV, JSON, XML) y se gestiona sobre CKAN, con API REST estandar en /api/3/action/.
+
+Las notas del portal aclaran dos cuestiones importantes: (1) los ultimos 2 meses no son definitivos porque los datos se consolidan a posteriori; (2) los datasets se mantienen 4 anos tras la concesion. Existen ademas datasets especificos para casos concretos como las ayudas DANA (eco-ayudas-dana) y los pagos medios a beneficiarios (eco-pmp-subvenciones).`,
+    ejemplos: [
+      {
+        lenguaje: 'curl',
+        titulo: 'Listar recursos del dataset anual',
+        codigo: `# Metadatos del dataset 2025 via CKAN API
+curl -s "https://dadesobertes.gva.es/es/api/3/action/package_show?id=eco-gvo-subv-2025" \\
+  | python3 -m json.tool | head -50
+
+# Listar todos los datasets de subvenciones GVA
+curl -s "https://dadesobertes.gva.es/es/api/3/action/package_search?q=eco-gvo-subv&rows=20" \\
+  | python3 -c "import json, sys; d=json.load(sys.stdin); print('\\n'.join(r['name'] for r in d['result']['results']))"`,
+      },
+      {
+        lenguaje: 'python',
+        titulo: 'Iterar todos los anos',
+        codigo: `import requests
+
+API = 'https://dadesobertes.gva.es/es/api/3/action'
+
+for year in range(2019, 2026):
+    pkg = requests.get(f'{API}/package_show', params={'id': f'eco-gvo-subv-{year}'}).json()
+    if not pkg.get('success'):
+        continue
+    for res in pkg['result']['resources']:
+        if res['format'].upper() == 'CSV':
+            print(f"{year}: {res['url']}")`,
+      },
+    ],
+  },
+  {
+    id: 'ast-subvenciones',
+    nombre: 'Asturias — Subvenciones y ayudas del Principado',
+    descripcion: 'CSVs directos del Principado de Asturias con subvenciones concedidas (2016-2023 historico + 2024 en adelante) y convocatorias. Publicacion estable en descargas.asturias.es con licencia CC BY 4.0.',
+    tipo: 'regional',
+    entidad: 'Principado de Asturias',
+    url_portal: 'https://datos.gob.es/es/catalogo/a03002951-subvenciones-y-ayudas-del-principado-de-asturias',
+    url_datos: 'https://descargas.asturias.es/asturias/opendata/SectorPublico/subvenciones/concesiones-subvs-2024-.csv',
+    formato: 'CSV (descarga directa)',
+    cobertura: 'Desde 2016',
+    actualizacion: 'Trimestral/anual',
+    licencia: 'CC BY 4.0',
+    descripcion_larga: `El Principado de Asturias publica las subvenciones y ayudas concedidas por su administracion como CSVs directos en descargas.asturias.es. Hay dos ficheros principales de concesiones (uno historico 2016-2023 y otro 2024 en adelante) y un fichero de convocatorias. Los enlaces son estables y no requieren autenticacion.
+
+Se federa en datos.gob.es con el identificador a03002951. La licencia es CC BY 4.0 y la actualizacion sigue un calendario trimestral/anual.`,
+    ejemplos: [
+      {
+        lenguaje: 'curl',
+        titulo: 'Descargar CSVs directos',
+        codigo: `# Concesiones historicas 2016-2023
+curl -sL -o asturias_subv_2016_2023.csv \\
+  "https://descargas.asturias.es/asturias/opendata/SectorPublico/subvenciones/concesiones-subvs-2016-2023.csv"
+
+# Concesiones 2024 en adelante (se actualiza)
+curl -sL -o asturias_subv_2024.csv \\
+  "https://descargas.asturias.es/asturias/opendata/SectorPublico/subvenciones/concesiones-subvs-2024-.csv"
+
+# Convocatorias
+curl -sL -o asturias_convocatorias.csv \\
+  "https://descargas.asturias.es/asturias/opendata/SectorPublico/subvenciones/convocatorias-subvs.csv"`,
+      },
+      {
+        lenguaje: 'python',
+        titulo: 'Cargar y unir historico + actual con pandas',
+        codigo: `import pandas as pd
+
+BASE = 'https://descargas.asturias.es/asturias/opendata/SectorPublico/subvenciones'
+
+hist = pd.read_csv(f'{BASE}/concesiones-subvs-2016-2023.csv', sep=';', encoding='utf-8')
+nuevo = pd.read_csv(f'{BASE}/concesiones-subvs-2024-.csv', sep=';', encoding='utf-8')
+
+df = pd.concat([hist, nuevo], ignore_index=True)
+print(f'Registros totales: {len(df):,}')
+print(df.columns.tolist())`,
+      },
+    ],
+  },
+  {
+    id: 'can-subvenciones',
+    nombre: 'Canarias — Subvenciones, premios y becas',
+    descripcion: 'Dataset CSV del Gobierno de Canarias con subvenciones, premios y becas gestionados electronicamente. Actualizacion mensual con un dataset activo y otro historico, ambos descarga directa en datos.canarias.es.',
+    tipo: 'regional',
+    entidad: 'Gobierno de Canarias',
+    url_portal: 'https://datos.canarias.es/catalogos/general/dataset/subvenciones-premios-y-becas-del-gobierno-de-canarias',
+    url_datos: 'https://datos.canarias.es/catalogos/general/dataset/0dba6b65-e377-4a3a-855c-5c35b9a2b3d6/resource/f988d0ba-9bc5-4d4a-93ec-cf567f971d34/download/subvenciones_premios_becas.csv',
+    formato: 'CSV (descarga directa)',
+    cobertura: 'Desde diciembre 2020',
+    actualizacion: 'Mensual',
+    licencia: 'Aviso legal Gobierno de Canarias',
+    descripcion_larga: `El Gobierno de Canarias publica mensualmente un dataset con todas las subvenciones, premios y becas que concede a traves de tramites electronicos. El portal datos.canarias.es ofrece dos datasets complementarios: uno "actual" con los datos vigentes y otro "historico" con snapshots mensuales.
+
+Junto al CSV principal se publica un diccionario de datos con las claves especiales (_U para "desconocido" y _Z para "no aplica") que pueden aparecer en los valores. El dataset cubre solo trámites electronicos gestionados por la administracion autonomica, no los cabildos insulares.`,
+    ejemplos: [
+      {
+        lenguaje: 'curl',
+        titulo: 'Descarga del CSV actual',
+        codigo: `# Dataset actual (vigente)
+curl -sL -o canarias_subv.csv \\
+  "https://datos.canarias.es/catalogos/general/dataset/0dba6b65-e377-4a3a-855c-5c35b9a2b3d6/resource/f988d0ba-9bc5-4d4a-93ec-cf567f971d34/download/subvenciones_premios_becas.csv"
+
+# Diccionario de campos
+curl -sL -o canarias_diccionario.csv \\
+  "https://datos.canarias.es/catalogos/general/dataset/0dba6b65-e377-4a3a-855c-5c35b9a2b3d6/resource/c4c6cbd9-3f3b-4bb0-8279-5cfcfa69cc2e/download/diccionario_datos_subvenciones_premios_y_becas_del_gobierno_de_canarias.csv"`,
+      },
+      {
+        lenguaje: 'python',
+        titulo: 'Cargar CSV con pandas',
+        codigo: `import pandas as pd
+
+url = 'https://datos.canarias.es/catalogos/general/dataset/0dba6b65-e377-4a3a-855c-5c35b9a2b3d6/resource/f988d0ba-9bc5-4d4a-93ec-cf567f971d34/download/subvenciones_premios_becas.csv'
+
+# Canarias suele usar ; como separador
+df = pd.read_csv(url, sep=';', encoding='utf-8', na_values=['_U', '_Z'])
+print(f'Registros: {len(df):,}')
+print(df.head())`,
+      },
+    ],
+  },
+  {
+    id: 'bal-subvenciones',
+    nombre: 'Illes Balears — Concesiones de subvenciones',
+    descripcion: 'Dataset bilingue del Govern de les Illes Balears con las concesiones de subvenciones de la CAIB. CSVs directos en catalan y castellano, alimentados desde BDNS y actualizados trimestralmente.',
+    tipo: 'regional',
+    entidad: 'Govern de les Illes Balears',
+    url_portal: 'https://intranet.caib.es/opendatacataleg/dataset/fcdd06a9-bb2e-4b5b-bf3b-a3d48d208e6e',
+    url_datos: 'https://intranet.caib.es/opendatacataleg/dataset/fcdd06a9-bb2e-4b5b-bf3b-a3d48d208e6e/resource/31c679b8-e09d-4260-8573-f825fbe683a8/download/concessions_subvencions_es.csv',
+    formato: 'CSV bilingue (ca/es)',
+    cobertura: 'Se mantienen 4 anos tras la concesion',
+    actualizacion: 'Trimestral',
+    licencia: 'CC BY',
+    descripcion_larga: `Dataset oficial del Govern de les Illes Balears con todas las concesiones de subvenciones de la Comunitat Autonoma. Publicado por la Direccion General de Coordinacion y Transparencia, es un mirror estructurado de los datos de Baleares en la BDNS. El dataset esta disponible en dos idiomas (catalan y castellano) como CSVs independientes.
+
+El alojamiento esta en intranet.caib.es/opendatacataleg/ (a pesar del nombre "intranet", es publico y sin autenticacion), y se accede tambien desde catalegdades.caib.cat que hace redireccion. La retencion de datos es de 4 anos tras la concesion conforme a la normativa de proteccion de datos.`,
+    ejemplos: [
+      {
+        lenguaje: 'curl',
+        titulo: 'Descargar CSVs bilingues',
+        codigo: `# Version castellana
+curl -sL -o baleares_subv_es.csv \\
+  "https://intranet.caib.es/opendatacataleg/dataset/fcdd06a9-bb2e-4b5b-bf3b-a3d48d208e6e/resource/31c679b8-e09d-4260-8573-f825fbe683a8/download/concessions_subvencions_es.csv"
+
+# Version catalana
+curl -sL -o baleares_subv_ca.csv \\
+  "https://intranet.caib.es/opendatacataleg/dataset/fcdd06a9-bb2e-4b5b-bf3b-a3d48d208e6e/resource/3b7c5819-57ec-47fe-8594-d3a0a1985e49/download/concessions_subvencions_ca.csv"`,
+      },
+      {
+        lenguaje: 'python',
+        titulo: 'Cargar CSV con pandas',
+        codigo: `import pandas as pd
+
+url = 'https://intranet.caib.es/opendatacataleg/dataset/fcdd06a9-bb2e-4b5b-bf3b-a3d48d208e6e/resource/31c679b8-e09d-4260-8573-f825fbe683a8/download/concessions_subvencions_es.csv'
+
+# Baleares suele usar ; como separador; probar ambos si falla
+try:
+    df = pd.read_csv(url, sep=';', encoding='utf-8')
+except Exception:
+    df = pd.read_csv(url, sep=',', encoding='utf-8')
+
+print(f'Registros: {len(df):,}')
+print(df.columns.tolist())`,
+      },
+    ],
+  },
 ]
