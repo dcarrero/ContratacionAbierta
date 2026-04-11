@@ -18,18 +18,26 @@ const portales = [
     ambito: 'Catalunya',
     tipo: 'Visualizacion + datos',
   },
+  {
+    nombre: 'subvencions.cat',
+    autor: 'Ciencia de Dades',
+    url: 'https://www.subvencions.cat',
+    descripcion: 'Observatorio independiente de subvenciones y ayudas publicas de Cataluna con datos del RAISC de la Generalitat. Mas de 21 millones de concesiones, rankings de beneficiarios y organismos concedentes, y visualizaciones por ambito tematico.',
+    ambito: 'Catalunya',
+    tipo: 'Buscador + visualizacion',
+  },
 ]
 ---
 
 <Layout
-  title="Portales de consulta de contratacion publica en Espana"
-  description="Sitios web con datos de contratacion publica ya procesados y listos para consulta libre. Buscadores, visualizaciones y herramientas de analisis."
+  title="Portales de consulta de contratacion publica y subvenciones en Espana"
+  description="Sitios web con datos de contratacion publica y subvenciones ya procesados y listos para consulta libre. Buscadores, visualizaciones y herramientas de analisis."
 >
 
   <div class="max-w-5xl mx-auto px-4 py-12">
     <h1 class="text-3xl font-bold text-white mb-2">Portales de consulta</h1>
     <p class="text-gray-400 mb-12">
-      Sitios web con datos publicos de contratacion ya tratados y listos para consulta libre.
+      Sitios web con datos publicos de contratacion y subvenciones ya tratados y listos para consulta libre.
       Herramientas creadas por la comunidad para ciudadanos, periodistas e investigadores.
     </p>
 
@@ -67,14 +75,14 @@ const portales = [
       <h2 class="text-xl font-bold text-white mb-4">Que son estos portales</h2>
       <div class="text-sm text-gray-400 space-y-3 leading-relaxed">
         <p>
-          Los datos de contratacion publica en Espana son publicados por las administraciones
+          Los datos de contratacion publica y subvenciones en Espana son publicados por las administraciones
           en formatos tecnicos (XML, Atom feeds, CSVs) pensados para maquinas, no para personas.
           Los portales listados aqui transforman esos datos en interfaces accesibles para consulta ciudadana.
         </p>
         <p>
-          Cada portal tiene su enfoque: algunos priorizan la busqueda individual de contratos,
-          otros el analisis estadistico o la visualizacion geografica. Todos comparten el objetivo
-          de hacer la contratacion publica mas transparente y accesible.
+          Cada portal tiene su enfoque: algunos priorizan la busqueda individual de contratos o ayudas,
+          otros el analisis estadistico, los rankings de beneficiarios o la visualizacion geografica. Todos comparten el objetivo
+          de hacer el gasto publico mas transparente y accesible.
         </p>
         <p>
           A diferencia de las <a href="/fuentes/" class="text-blue-400 hover:text-blue-300 underline">fuentes de datos</a>
