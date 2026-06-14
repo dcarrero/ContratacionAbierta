@@ -75,7 +75,7 @@ src/
 
 ## Proyecto relacionado
 
-Los datos catalogados aquí se importan y procesan en un proyecto privado de análisis de datos de contratación pública con ~8M contratos indexados.
+Los datos catalogados aquí se consumen en [**contratacion-publica-abierta**](https://github.com/dcarrero/contratacion-publica-abierta), el portal open source de transparencia en contratación pública (Laravel 12 + PostgreSQL) con ~8,2M contratos indexados.
 
 ## Licencia
 

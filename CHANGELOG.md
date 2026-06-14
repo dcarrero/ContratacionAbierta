@@ -5,6 +5,22 @@ Todos los cambios relevantes de este proyecto se documentan aqui.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y este proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 
+## [0.4.0] - 2026-06-14
+
+### Added
+
+- Destacado el repositorio propio **dcarrero/contratacion-publica-abierta** (el
+  portal open source que consume estas fuentes) en la página `/codigo/` como
+  bloque "Proyecto propio" en primera posición, y en la home como bloque
+  "Open source".
+
+### Changed
+
+- `/codigo/`: la lista de repositorios de terceros pasa a "Otros proyectos de la
+  comunidad", debajo del proyecto propio destacado.
+- README: el proyecto relacionado deja de describirse como privado y enlaza al
+  repositorio público.
+
 ## [0.3.0] - 2026-06-14
 
 ### Changed
