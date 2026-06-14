@@ -5,6 +5,13 @@ Todos los cambios relevantes de este proyecto se documentan aqui.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y este proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 
+## [0.4.1] - 2026-06-14
+
+### Added
+
+- El footer muestra la versión actual de la web (`v{version}`), leída
+  dinámicamente de `package.json`.
+
 ## [0.4.0] - 2026-06-14
 
 ### Added
