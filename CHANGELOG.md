@@ -5,7 +5,22 @@ Todos los cambios relevantes de este proyecto se documentan aqui.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y este proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 
-## [0.2.0] - 2026-04-11
+## [0.3.0] - 2026-06-14
+
+### Changed
+
+Migración del hosting de **Cloudflare Workers Static Assets** a **Cloudflare
+Pages**. El sitio es 100% estático, por lo que Pages es el destino natural y
+habilita build + deploy automáticos por integración Git.
+
+- Eliminado `wrangler.jsonc` (específico de Workers Static Assets). El despliegue
+  pasa a configurarse en el panel de Pages (build `npm run build`, output `dist`).
+- Añadido `.nvmrc` con Node 22 para fijar la versión de build en Pages.
+
+### Added
+
+- Página de error **404** (`src/pages/404.astro`), que Astro compila a
+  `dist/404.html` y Pages sirve automáticamente.
 
 ### Added
 
