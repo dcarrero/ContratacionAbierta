@@ -13,6 +13,7 @@ const siteUrl = 'https://contratacionabierta.com'
 const { title, description = 'Catalogo de fuentes de datos abiertos de contratacion publica en Espana. Feeds oficiales, APIs regionales, datasets y descargas directas.' } = Astro.props
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href
 const fullTitle = `${title} — ${siteName}`
+const ogImage = new URL('/og.png', siteUrl).href
 ---
 
 <!doctype html>
@@ -33,11 +34,16 @@ const fullTitle = `${title} — ${siteName}`
   <meta property="og:url" content={canonicalUrl} />
   <meta property="og:site_name" content={siteName} />
   <meta property="og:locale" content="es_ES" />
+  <meta property="og:image" content={ogImage} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="ContratacionAbierta.com — catálogo de datos abiertos de contratación pública" />
 
   <!-- Twitter -->
-  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content={fullTitle} />
   <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImage} />
 
   <!-- SEO para IA / LLMs -->
   <link rel="alternate" type="text/plain" href={`${siteUrl}/llms.txt`} title="LLM context" />

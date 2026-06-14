@@ -5,6 +5,27 @@ Todos los cambios relevantes de este proyecto se documentan aqui.
 El formato se basa en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y este proyecto sigue [Semantic Versioning](https://semver.org/lang/es/).
 
+## [0.5.0] - 2026-06-14
+
+### Added
+
+- **Imagen Open Graph** (`public/og.png`, 1200×630) y etiquetas `og:image` /
+  `twitter:image`. La Twitter Card pasa a `summary_large_image`. Antes no había
+  imagen al compartir el enlace en redes o mensajería.
+- **`public/_headers`**: caché inmutable de 1 año para los assets con hash
+  (`/_astro/*`), que Cloudflare Pages servía con solo 4 h.
+
+### Fixed
+
+- Títulos duplicados en las páginas legales (aviso legal, cookies, privacidad):
+  pasaban `title="... — ContratacionAbierta.com"` mientras el layout ya añadía el
+  sufijo, generando `— ContratacionAbierta.com — ContratacionAbierta.com`.
+
+### Changed
+
+- Meta `description` propia en las páginas legales (antes heredaban la genérica
+  del catálogo, que no las describía).
+
 ## [0.4.1] - 2026-06-14
 
 ### Added

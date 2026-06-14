@@ -1,0 +1,11 @@
+# Assets con hash en el nombre → inmutables, caché de 1 año
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Favicons e imágenes estáticas → caché de 1 día
+/favicon.svg
+  Cache-Control: public, max-age=86400
+/favicon.ico
+  Cache-Control: public, max-age=86400
+/og.png
+  Cache-Control: public, max-age=86400
